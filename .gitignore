@@ -3,6 +3,12 @@
 /build/
 /quizz.db
 /quizz.db-*
+/data/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
 
 # Brainstorming companion mockups
 /.superpowers/
