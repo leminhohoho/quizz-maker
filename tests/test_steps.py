@@ -99,6 +99,35 @@ def test_derivation_localizes_first_wrong_definition():
     assert g.result["final"]["status"] == "fail"
 
 
+FIRST_LAW = {
+    "id": "q-first-law",
+    "type": "exercise",
+    "prompt": "Absorbs 1.25 kJ of heat, does 0.40 kJ of work. Find ΔE.",
+    "steps_mode": "derivation",
+    "context": {"symbols": {"q": {}, "w": {}, "\\Delta E": {}}, "relations": ["\\Delta E=q+w"]},
+    "final": {"checker": "numeric_units", "params": {"expected": 0.85, "unit": "kJ", "rel_tol": 0.01}},
+    "reference_solution": [
+        {"latex": r"q=1.25\,\mathrm{kJ}"},
+        {"latex": r"w=-0.40\,\mathrm{kJ}"},
+        {"latex": r"\Delta E=q+w"},
+        {"latex": r"\Delta E=0.85\,\mathrm{kJ}"},
+    ],
+}
+
+
+def test_derivation_carries_a_wrong_value_forward_without_re_flagging():
+    g = run(FIRST_LAW, [r"q=1.25\,\mathrm{kJ}", r"w=0.40\,\mathrm{kJ}", r"\Delta E=q+w", r"\Delta E=1.65\,\mathrm{kJ}"])
+    assert statuses(g) == ["pass", "fail", "pass", "pass"]
+    assert g.result["lines"][1]["verdict"]["reason"] == r"\(w\) does not match the expected value"
+    assert "earlier" in g.result["lines"][2]["verdict"]["reason"]
+    assert g.result["final"]["status"] == "fail"
+
+
+def test_derivation_reports_wrong_dimension_of_a_definition():
+    g = run(FIRST_LAW, [r"q=1.25\,\mathrm{kW}"])
+    assert g.result["lines"][0]["verdict"]["reason"] == r"\(q\) has the wrong dimension"
+
+
 def test_derivation_arithmetic_slip_fails():
     g = run(EXERCISE_DERIVATION, [r"q=mc\Delta T", r"q=50.0\,\mathrm{g}\cdot4.18\,\mathrm{J/(g\,K)}\cdot20.0\,\mathrm{K}=4000\,\mathrm{J}"])
     assert statuses(g) == ["pass", "fail"]

@@ -6,7 +6,7 @@
   <h1 class="serif-title">{{ quiz.title }}</h1>
   <p class="muted">
     {{ questions|length }} questions · {{ points }} points ·
-    {% for type, count in counts.items() %}{{ count }} {{ TYPE_LABELS[type]|lower }}{% if not loop.last %}, {% endif %}{% endfor %}
+    {% for type, count in counts.items() %}{{ count }} {{ TYPE_LABELS[type] if type == "mcq" else TYPE_LABELS[type]|lower }}{% if not loop.last %}, {% endif %}{% endfor %}
   </p>
   <form method="post" action="/quiz/{{ quiz.id }}/attempts">
     <button class="send big" type="submit">Start</button>

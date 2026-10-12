@@ -194,7 +194,7 @@ math-field::part(menu-toggle) { display: none; }
 .line[data-status="pass_numeric"] .badge, .line[data-final="pass_numeric"] .badge { border-style: dashed; }
 .line[data-status^="agent"] .badge { color: var(--accent); border-color: var(--accent); }
 .note { font-size: 13px; color: var(--bad); padding: 0 0 4px 24px; }
-.note.undecided, .note.unverified, .note.pass_numeric, .note.agent_pass { color: var(--muted); }
+.note.pass, .note.undecided, .note.unverified, .note.pass_numeric, .note.agent_pass { color: var(--muted); }
 .why-text { font-size: 13px; color: var(--muted); padding-left: 24px; }
 .final { font-size: 14px; margin-top: 6px; display: flex; gap: 6px; align-items: center; }
 .opt.result { cursor: default; }

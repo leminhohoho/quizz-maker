@@ -49,7 +49,7 @@
         <span class="mark {{ s }}">{{ MARKS[s] }}</span><span class="badge">{{ BADGES[s] }}</span>
       </div>
       {% if line.justification %}<div class="why-text">↳ {{ line.justification }}</div>{% endif %}
-      {% if line.verdict.reason and s not in ("pass",) and line.verdict.reason != "definition" or s in ("fail", "agent_fail") %}
+      {% if line.verdict.reason and line.verdict.reason != "definition" %}
       <div class="note {{ s }}">{{ line.verdict.reason }}{% if line.verdict.counterexample %} — e.g. at {% for k, val in line.verdict.counterexample.items() %}{{ k }} = {{ val }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</div>
       {% endif %}
     {% endfor %}

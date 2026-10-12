@@ -239,6 +239,7 @@ class DerivationGrader(_Grader):
             self.relations.append(sp.Eq(parts[0], parts[1], evaluate=False))
         self.reference = reference_values
         self.defined: dict[sp.Symbol, sp.Expr] = {}
+        self.tainted: set[sp.Symbol] = set()  # defined from a value that was already wrong
 
     def subst(self, expr):
         return expr.subs(self.givens).subs(self.defined)
@@ -266,14 +267,20 @@ class DerivationGrader(_Grader):
                 return Verdict("fail", "the sides are not equal")
         return Verdict("pass")
 
-    def against_reference(self, sym: sp.Symbol, value) -> Verdict:
+    def against_reference(self, sym: sp.Symbol, value, sources: set) -> Verdict:
+        if sources & self.tainted:
+            self.tainted.add(sym)
+            return Verdict("pass", "consistent with your earlier values")
         expected = (self.reference or {}).get(sym)
         if expected is None:
             return Verdict("pass", "definition")
         verdict = self.all_equal([value, expected])
         if verdict.passed:
             return verdict
-        return Verdict("fail", f"{sym.name} does not match the expected value ({verdict.reason})")
+        self.tainted.add(sym)
+        if "dimension" in verdict.reason:
+            return Verdict("fail", f"\\({sym.name}\\) has the wrong dimension")
+        return Verdict("fail", f"\\({sym.name}\\) does not match the expected value")
 
     def by_relations(self, lhs, rhs, *where) -> Verdict:
         diff = lhs - rhs
@@ -309,7 +316,8 @@ class DerivationGrader(_Grader):
             if not verdict.passed or not fresh:
                 return verdict
             self.defined[lhs] = values[-1]
-            return self.against_reference(lhs, values[-1])
+            sources = set().union(*(p.free_symbols for p in rest))
+            return self.against_reference(lhs, values[-1], sources)
         verdict = Verdict("pass")
         for k, (a, b) in enumerate(itertools.pairwise(parts)):
             verdict = _worst(verdict, self.by_relations(a, b, i, k))
