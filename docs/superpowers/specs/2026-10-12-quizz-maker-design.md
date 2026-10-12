@@ -314,7 +314,7 @@ A small JS shim serializes composer state (math-field LaTeX values, reasons, bla
 
 ### 6.3 Live grader protocol
 
-- **Settings:** `grader.command` — shell command template run via `sh -c`; if it contains `{prompt_file}`, that placeholder is replaced with the shell-quoted path of a temp file holding the prompt, otherwise the prompt is written to stdin. Examples: `claude -p`, `codex exec "$(cat {prompt_file})"`, `pi -p "$(cat {prompt_file})"`. `grader.timeout` default 120 s. Unset by default → undecided lines become `unverified` immediately.
+- **Settings:** `grader.command` — shell command template run via `sh -c`; if it contains `{prompt_file}`, that placeholder is replaced with the shell-quoted path of a temp file holding the prompt, otherwise the prompt is written to stdin. Examples: `claude -p`, `codex exec` (both read stdin), `pi -p "$(cat {prompt_file})"`. `grader.timeout` default 120 s. Unset by default → undecided lines become `unverified` immediately.
 - **Execution:** asyncio subprocess in its own process group, launched from a temp working directory as a background task after the verdict fragment is returned; answer `status = pending_agent` until done.
 - **Prompt:** self-contained — exercise prompt, context, reference solution, rubric, every submitted line with its deterministic verdict, and the explicit list of line indices to judge. It requires the response to end with JSON: `{"lines":[{"index":3,"verdict":"pass"|"fail","comment":"…"}]}`.
 - **Parsing:** last JSON object in stdout, validated with Pydantic. Entries for indices not requested are dropped. Results map to `agent_pass` / `agent_fail`.

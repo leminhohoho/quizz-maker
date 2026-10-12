@@ -9,7 +9,7 @@
     </label>
     <p class="muted">Runs when a solution line can't be decided by the checkers. The prompt is sent on stdin,
       or written to a file if the command contains <code>{prompt_file}</code>, e.g.
-      <code>codex exec "$(cat {prompt_file})"</code>. Leave empty to disable; such lines are then marked unverified.</p>
+      <code>pi -p "$(cat {prompt_file})"</code>. Leave empty to disable; such lines are then marked unverified.</p>
     <label>Timeout (seconds)
       <input name="grader_timeout" value="{{ config.timeout|score }}" inputmode="numeric">
     </label>
