@@ -36,4 +36,5 @@ packages = ["src/quizz"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+filterwarnings = ["ignore:builtin type .* has no __module__ attribute:DeprecationWarning"]
 markers = ["browser: Playwright browser tests"]
