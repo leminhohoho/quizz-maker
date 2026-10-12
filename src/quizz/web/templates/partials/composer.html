@@ -1,6 +1,7 @@
 <form id="composer" class="composer" data-type="{{ q.type }}" data-widget="{{ widget }}"
       hx-post="/attempts/{{ attempt.id }}/q/{{ n }}" hx-target="#answer-area" hx-swap="innerHTML">
   <input type="hidden" name="response">
+  <div id="composer-error"></div>
   {% if q.type == "mcq" %}
     {% for c in choices %}
     <label class="opt"><input type="radio" name="choice" value="{{ c.id }}"><span class="k">{{ loop.index }}</span><span class="opt-text">{{ c.html }}</span></label>
