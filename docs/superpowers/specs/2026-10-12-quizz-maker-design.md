@@ -215,7 +215,7 @@ All math strings use the **MathLive LaTeX dialect** so content and answers share
 - JSON Schema validation; checker params validation.
 - Referential checks: MCQ/multi-select answer ids exist; fill-blank placeholders match `blanks` keys; referenced assets exist; `source_slides` lie within the page count of the ingest manifest whose `sha256` equals `source.sha256` (looked up under `$QUIZZ_HOME/build/*/manifest.json`; skipped with a warning if none matches).
 - Every reference-solution line must get `pass` or `pass_numeric` **without the agent**, unless flagged `agent_graded: true` (requires non-empty `rubric`). The reference's final line must pass `final`.
-- **Mutation test:** each checker defines `mutants(params)` — wrong answers that must **fail** the CheckSpec, rejecting vacuous checks (e.g. a huge tolerance). `expr_equiv` / `antiderivative` / `transform`: × 2, sign flip, drop one additive term (when ≥ 2 terms). `numeric_units`: value × (1 + 10·rel_tol), value in a different unit of the same dimension without conversion. `reaction_balance`: one coefficient + 1. Applies to `math_answer` and exercise `final`.
+- **Mutation test:** each checker defines `mutants(params)` — wrong answers that must **fail** the CheckSpec, rejecting vacuous checks (e.g. a huge tolerance). `expr_equiv` / `antiderivative` / `transform`: × 2, sign flip, drop one additive term (when ≥ 2 terms). `numeric_units`: value × 1.1 (so any `rel_tol` ≥ 10 % is flagged), sign flip, value × 1000 (unit slip without conversion). `reaction_balance`: first or last coefficient + 1. Applies to `math_answer` and exercise `final`.
 
 ### Determinism and budgets
 
