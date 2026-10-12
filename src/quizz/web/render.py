@@ -46,9 +46,9 @@ def fill_prompt(text: str, asset_base: str) -> Markup:
 
 def plain(text: str, limit: int = 90) -> str:
     """Prompt snippet for lists: markdown and placeholders stripped."""
-    text = PLACEHOLDER.sub("___", text)
+    text = PLACEHOLDER.sub("QZBLANKQZ", text)
     text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)
-    text = re.sub(r"[*_`#>]", "", text).strip()
+    text = re.sub(r"[*_`#>]", "", text).strip().replace("QZBLANKQZ", "___")
     return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
 
 
