@@ -1,0 +1,71 @@
+{
+  "format_version": 1,
+  "id": "physics2-capacitors",
+  "title": "Capacitors and Stored Energy",
+  "course": "Fundamental Physics 2",
+  "source": { "filename": "physics2-capacitance.pdf", "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+  "questions": [
+    {
+      "id": "double-energy",
+      "type": "multi_select",
+      "prompt": "A capacitor stores $U = \\tfrac{1}{2}CV^2$. Which changes **double** the stored energy (everything else fixed)?",
+      "choices": [
+        { "id": "c2", "text": "Doubling $C$" },
+        { "id": "v2", "text": "Doubling $V$" },
+        { "id": "vsqrt", "text": "Multiplying $V$ by $\\sqrt{2}$" },
+        { "id": "d2", "text": "Doubling the plate separation of a parallel-plate capacitor at fixed $V$" }
+      ],
+      "answer": ["c2", "vsqrt"],
+      "scoring": "partial",
+      "points": 2,
+      "explanation": "$U \\propto C$ and $U \\propto V^2$. Doubling $V$ quadruples $U$; doubling $d$ halves $C$.",
+      "source_slides": [12]
+    },
+    {
+      "id": "energy-value",
+      "type": "math_answer",
+      "prompt": "A $4.0\\,\\mu\\text{F}$ capacitor is charged to $12\\,\\text{V}$. How much energy does it store? Give 2 significant figures with units.",
+      "check": { "checker": "numeric_units", "params": { "expected": 2.88e-4, "unit": "J", "rel_tol": 0.02, "sig_figs": 2 } },
+      "explanation": "$U = \\tfrac{1}{2}(4.0\\times10^{-6})(12)^2 = 2.9\\times10^{-4}\\,\\text{J}$.",
+      "source_slides": [13]
+    },
+    {
+      "id": "charge-steps",
+      "type": "exercise",
+      "prompt": "Find the charge on a $4.0\\,\\mu\\text{F}$ capacitor connected to a $12\\,\\text{V}$ battery. Show each step.",
+      "steps_mode": "derivation",
+      "context": {
+        "symbols": { "Q": { "unit": "C", "description": "charge on the capacitor" } },
+        "givens": { "C": { "value": 4.0, "unit": "\\mu F" }, "V": { "value": 12, "unit": "V" } },
+        "relations": ["Q=CV"]
+      },
+      "final": { "checker": "numeric_units", "params": { "expected": 4.8e-5, "unit": "C", "rel_tol": 0.02 } },
+      "reference_solution": [
+        { "latex": "Q=CV" },
+        { "latex": "Q=4.0\\,\\mathrm{\\mu F}\\cdot12\\,\\mathrm{V}" },
+        { "latex": "Q=4.8\\times10^{-5}\\,\\mathrm{C}" }
+      ],
+      "rubric": "Q = C V with C in farads.",
+      "points": 2,
+      "source_slides": [8]
+    },
+    {
+      "id": "symbolic-energy",
+      "type": "exercise",
+      "prompt": "Starting from $U = \\tfrac{1}{2}CV^2$ and $Q = CV$, express $U$ in terms of $Q$ and $C$.",
+      "steps_mode": "derivation",
+      "context": {
+        "symbols": { "U": {}, "Q": {}, "C": { "assumptions": ["positive"] }, "V": {} },
+        "relations": ["U=\\frac{1}{2}CV^2", "Q=CV"]
+      },
+      "final": { "checker": "expr_equiv", "params": { "expected": "\\frac{Q^2}{2C}", "vars": { "C": "positive" } } },
+      "reference_solution": [
+        { "latex": "U=\\frac{1}{2}CV^2" },
+        { "latex": "U=\\frac{Q^2}{2C}", "justification": "substitute V = Q/C" }
+      ],
+      "rubric": "Eliminate V using V = Q/C.",
+      "points": 2,
+      "source_slides": [14]
+    }
+  ]
+}

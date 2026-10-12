@@ -1,0 +1,61 @@
+{
+  "format_version": 1,
+  "id": "chem2-thermochemistry",
+  "title": "Thermochemistry Basics",
+  "course": "General Chemistry 2",
+  "source": { "filename": "chem2-thermochemistry.pdf", "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+  "questions": [
+    {
+      "id": "exothermic-sign",
+      "type": "mcq",
+      "prompt": "For an exothermic reaction at constant pressure, the enthalpy change $\\Delta H$ is…",
+      "choices": [
+        { "id": "neg", "text": "negative" },
+        { "id": "pos", "text": "positive" },
+        { "id": "zero", "text": "zero" }
+      ],
+      "answer": "neg",
+      "explanation": "Heat leaves the system, so $\\Delta H = q_p < 0$.",
+      "source_slides": [9]
+    },
+    {
+      "id": "state-function",
+      "type": "fill_blank",
+      "prompt": "Enthalpy is a {{kind}} function: its change depends only on the initial and final states.",
+      "blanks": { "kind": { "accept": ["state"] } },
+      "source_slides": [6]
+    },
+    {
+      "id": "balance-propane",
+      "type": "math_answer",
+      "prompt": "Balance the combustion of propane: $\\mathrm{C_3H_8 + O_2 \\to CO_2 + H_2O}$.",
+      "check": { "checker": "reaction_balance", "params": { "reactants": ["C3H8", "O2"], "products": ["CO2", "H2O"] } },
+      "explanation": "$\\mathrm{C_3H_8 + 5O_2 \\to 3CO_2 + 4H_2O}$.",
+      "source_slides": [15]
+    },
+    {
+      "id": "heat-water",
+      "type": "exercise",
+      "prompt": "How much heat is needed to warm $50.0\\,\\text{g}$ of water by $20.0\\,\\text{K}$? ($c = 4.18\\,\\text{J g}^{-1}\\text{K}^{-1}$)",
+      "steps_mode": "derivation",
+      "context": {
+        "symbols": { "q": { "unit": "J", "description": "heat absorbed" } },
+        "givens": {
+          "m": { "value": 50.0, "unit": "g" },
+          "c": { "value": 4.18, "unit": "J/(g K)" },
+          "\\Delta T": { "value": 20.0, "unit": "K" }
+        },
+        "relations": ["q=mc\\Delta T"]
+      },
+      "final": { "checker": "numeric_units", "params": { "expected": 4180, "unit": "J", "rel_tol": 0.01, "sig_figs": 3 } },
+      "reference_solution": [
+        { "latex": "q=mc\\Delta T" },
+        { "latex": "q=50.0\\,\\mathrm{g}\\cdot4.18\\,\\mathrm{J/(g\\,K)}\\cdot20.0\\,\\mathrm{K}" },
+        { "latex": "q=4.18\\times10^{3}\\,\\mathrm{J}" }
+      ],
+      "rubric": "q = m c ΔT; answer to 3 significant figures.",
+      "points": 2,
+      "source_slides": [20]
+    }
+  ]
+}

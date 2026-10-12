@@ -1,0 +1,72 @@
+{
+  "format_version": 1,
+  "id": "calc2-integration-by-parts",
+  "title": "Integration by Parts",
+  "course": "Calculus 2",
+  "source": { "filename": "calc2-week3.pdf", "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+  "questions": [
+    {
+      "id": "liate-choice",
+      "type": "mcq",
+      "prompt": "For $\\int x\\ln x\\,dx$, which choice of $u$ does the LIATE rule suggest?",
+      "choices": [
+        { "id": "a", "text": "$u = x$" },
+        { "id": "b", "text": "$u = \\ln x$" },
+        { "id": "c", "text": "$u = x\\ln x$" }
+      ],
+      "answer": "b",
+      "explanation": "Logarithms come before algebraic functions in LIATE, so $u = \\ln x$ and $dv = x\\,dx$.",
+      "source_slides": [4]
+    },
+    {
+      "id": "parts-formula",
+      "type": "fill_blank",
+      "prompt": "Integration by parts: $\\int u\\,dv = uv - $ {{rest}}.",
+      "blanks": { "rest": { "accept": ["∫ v du", "∫v du", "int v du", "integral of v du"] } },
+      "explanation": "$\\int u\\,dv = uv - \\int v\\,du$.",
+      "source_slides": [2]
+    },
+    {
+      "id": "x-cos-x",
+      "type": "math_answer",
+      "prompt": "Find $\\int x\\cos x\\,dx$.",
+      "check": { "checker": "antiderivative", "params": { "integrand": "x\\cos x", "var": "x" } },
+      "explanation": "With $u = x$, $dv = \\cos x\\,dx$: $x\\sin x - \\int \\sin x\\,dx = x\\sin x + \\cos x + C$.",
+      "source_slides": [6]
+    },
+    {
+      "id": "x-exp-x-steps",
+      "type": "exercise",
+      "prompt": "Evaluate $\\int x e^{x}\\,dx$. Show each step.",
+      "steps_mode": "chain",
+      "start": "\\int xe^{x}\\,dx",
+      "final": { "checker": "antiderivative", "params": { "integrand": "xe^{x}", "var": "x" } },
+      "reference_solution": [
+        { "latex": "\\int xe^{x}\\,dx" },
+        { "latex": "xe^{x}-\\int e^{x}\\,dx", "justification": "parts with u = x, dv = e^x dx" },
+        { "latex": "xe^{x}-e^{x}+C" }
+      ],
+      "rubric": "Integration by parts with u = x, dv = e^x dx, then integrate e^x.",
+      "points": 2,
+      "source_slides": [7, 8]
+    },
+    {
+      "id": "substitution-steps",
+      "type": "exercise",
+      "prompt": "Evaluate $\\int 2x\\,e^{x^2}\\,dx$ using a substitution. Show each step.",
+      "steps_mode": "chain",
+      "start": "\\int 2xe^{x^2}\\,dx",
+      "final": { "checker": "antiderivative", "params": { "integrand": "2xe^{x^2}", "var": "x" } },
+      "reference_solution": [
+        { "latex": "\\int 2xe^{x^2}\\,dx" },
+        { "latex": "u=x^2", "justification": "substitute u = x^2, du = 2x dx" },
+        { "latex": "\\int e^{u}\\,du" },
+        { "latex": "e^{u}+C" },
+        { "latex": "e^{x^2}+C" }
+      ],
+      "rubric": "u-substitution with u = x^2.",
+      "points": 2,
+      "source_slides": [10]
+    }
+  ]
+}

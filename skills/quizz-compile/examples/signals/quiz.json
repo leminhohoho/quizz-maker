@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "id": "signals-laplace-intro",
+  "title": "The Laplace Transform",
+  "course": "Signals and Systems",
+  "source": { "filename": "signals-laplace.pdf", "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+  "questions": [
+    {
+      "id": "roc-right-sided",
+      "type": "mcq",
+      "prompt": "The region of convergence of the Laplace transform of a right-sided signal is…",
+      "choices": [
+        { "id": "right", "text": "a right half-plane $\\mathrm{Re}(s) > \\sigma_0$" },
+        { "id": "left", "text": "a left half-plane $\\mathrm{Re}(s) < \\sigma_0$" },
+        { "id": "strip", "text": "a vertical strip" }
+      ],
+      "answer": "right",
+      "source_slides": [11]
+    },
+    {
+      "id": "laplace-exp",
+      "type": "math_answer",
+      "prompt": "Find the Laplace transform of $x(t) = e^{-2t}u(t)$ and its region of convergence. Answer as `X(s), ROC`.",
+      "check": {
+        "checker": "transform",
+        "params": { "kind": "laplace", "expected": "\\frac{1}{s+2}", "var": "s", "region_of_convergence": "\\mathrm{Re}(s)>-2" }
+      },
+      "explanation": "$X(s) = \\frac{1}{s+2}$ for $\\mathrm{Re}(s) > -2$.",
+      "source_slides": [12]
+    },
+    {
+      "id": "laplace-from-definition",
+      "type": "exercise",
+      "prompt": "Compute $\\mathcal{L}\\{e^{-2t}u(t)\\}$ from the definition, assuming $s > 0$. Show each step.",
+      "steps_mode": "chain",
+      "context": {
+        "symbols": { "s": { "assumptions": ["positive"] }, "t": { "assumptions": ["positive"] } }
+      },
+      "start": "\\int_{0}^{\\infty}e^{-2t}e^{-st}\\,dt",
+      "final": { "checker": "expr_equiv", "params": { "expected": "\\frac{1}{s+2}", "vars": { "s": "positive" } } },
+      "reference_solution": [
+        { "latex": "\\int_{0}^{\\infty}e^{-2t}e^{-st}\\,dt" },
+        { "latex": "\\int_{0}^{\\infty}e^{-\\left(s+2\\right)t}\\,dt", "justification": "combine the exponentials" },
+        { "latex": "\\frac{1}{s+2}" }
+      ],
+      "rubric": "Combine exponents and integrate e^{-(s+2)t} from 0 to infinity.",
+      "points": 2,
+      "source_slides": [12]
+    }
+  ]
+}
