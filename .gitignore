@@ -1,0 +1,8 @@
+# Lecture content and local data (repo stays lecture-agnostic)
+/library/
+/build/
+/quizz.db
+/quizz.db-*
+
+# Brainstorming companion mockups
+/.superpowers/
