@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Q{{ n }} · {{ quiz.title }} · quizz{% endblock %}
+{% block main %}
+<div class="focus">
+  <header class="topbar">
+    <a class="muted" href="/quiz/{{ quiz.id }}">{{ quiz.title }}</a>
+    <span class="muted">{{ n }} / {{ total }}</span>
+  </header>
+  <div class="progress"><i style="width: {{ (100 * (n - 1) / total)|round(1) }}%"></i></div>
+
+  <div class="question-area">
+    <div class="column">
+      <div class="prompt serif">{{ prompt_html }}</div>
+      {% if q.type == "exercise" and (q.context.givens or q.context.symbols) %}
+      <div class="context muted">
+        {% for name, g in q.context.givens.items() %}<span class="chip">\({{ name }} = {{ g.value }}\,\mathrm{ {{- g.unit -}} }\)</span>{% endfor %}
+        {% for name, s in q.context.symbols.items() %}<span class="chip" title="{{ s.description }}">\({{ name }}\){% if s.description %} {{ s.description }}{% endif %}</span>{% endfor %}
+      </div>
+      {% endif %}
+      <p class="meta">
+        {% if q.source_slides %}Slide{{ "s" if q.source_slides|length > 1 }} {{ q.source_slides|join(", ") }} · {% endif %}{{ TYPE_LABELS[q.type] }} · {{ q.points }} pt{{ "s" if q.points > 1 }}
+      </p>
+    </div>
+  </div>
+
+  <div class="answer-dock">
+    <div id="answer-area" class="column">
+      {% if answered %}{% include "partials/verdict.html" %}{% else %}{% include "partials/composer.html" %}{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

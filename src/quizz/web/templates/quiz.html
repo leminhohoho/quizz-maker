@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} · quizz{% endblock %}
+{% block main %}
+<div class="column">
+  <p class="label">{{ quiz.course }}</p>
+  <h1 class="serif-title">{{ quiz.title }}</h1>
+  <p class="muted">
+    {{ questions|length }} questions · {{ points }} points ·
+    {% for type, count in counts.items() %}{{ count }} {{ TYPE_LABELS[type]|lower }}{% if not loop.last %}, {% endif %}{% endfor %}
+  </p>
+  <form method="post" action="/quiz/{{ quiz.id }}/attempts">
+    <button class="send big" type="submit">Start</button>
+  </form>
+
+  <h2 class="label section-gap">Attempts</h2>
+  {% if attempts %}
+  <table class="history">
+    <thead><tr><th>Started</th><th>Score</th><th></th></tr></thead>
+    <tbody>
+    {% for a in attempts %}
+      <tr>
+        <td>{{ a.started_at[:16]|replace("T", " ") }}</td>
+        <td>
+          {% if a.finished_at %}{{ a.score|score }} / {{ a.max_score|score }}{% else %}{{ a.live_score|score }} / {{ a.max_score|score }} <span class="muted">(in progress)</span>{% endif %}
+          {% if flags[a.id] %}<span class="badge warn">unverified lines</span>{% endif %}
+        </td>
+        <td><a href="/attempts/{{ a.id }}{% if a.finished_at %}/summary{% endif %}">{% if a.finished_at %}Review{% else %}Resume{% endif %}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No attempts yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

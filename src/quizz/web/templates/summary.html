@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Summary · {{ quiz.title }} · quizz{% endblock %}
+{% block main %}
+<div class="column">
+  <p class="label">{{ quiz.course }}</p>
+  <h1 class="serif-title">{{ quiz.title }}</h1>
+  <p class="big-score">{{ attempt.score|score }} / {{ attempt.max_score|score }}</p>
+  <ol class="summary-list">
+    {% for item in items %}
+    <li>
+      <a href="/attempts/{{ attempt.id }}/q/{{ item.n }}">
+        <span class="mark {% if item.score is none %}none{% elif item.score >= item.points %}ok{% elif item.score > 0 %}part{% else %}bad{% endif %}">
+          {% if item.score is none %}–{% elif item.score >= item.points %}✓{% elif item.score > 0 %}◐{% else %}✗{% endif %}
+        </span>
+        <span class="snippet">{{ item.snippet }}</span>
+        <span class="muted">{{ TYPE_LABELS[item.type] }} · {% if item.score is none %}unanswered{% else %}{{ item.score|score }}/{{ item.points }}{% endif %}</span>
+        {% if item.pending %}<span class="badge">agent grading…</span>{% endif %}
+        {% if item.unverified %}<span class="badge warn">unverified</span>{% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+  <form method="post" action="/quiz/{{ quiz.id }}/attempts"><button class="send" type="submit">New attempt</button></form>
+</div>
+{% endblock %}

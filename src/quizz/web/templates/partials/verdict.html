@@ -1,0 +1,73 @@
+{% set full = score >= q.points %}
+<div class="verdict composer" data-state="verdict"
+     {% if pending %}hx-get="/attempts/{{ attempt.id }}/q/{{ n }}/verdict" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+  <div class="score-row">
+    <span class="score {{ 'ok' if full else ('part' if score > 0 else 'bad') }}">
+      {{ "✓" if full else ("◐" if score > 0 else "✗") }} {{ score|score }} / {{ q.points }}
+    </span>
+    {% if q.type == "exercise" %}
+    <details class="ref">
+      <summary class="ghost">Reference solution</summary>
+      <ol class="ref-lines">
+        {% for s in q.reference_solution %}<li><span class="m">\({{ s.latex }}\)</span>{% if s.justification %} <span class="muted">— {{ s.justification }}</span>{% endif %}</li>{% endfor %}
+      </ol>
+    </details>
+    {% endif %}
+  </div>
+
+  {% if q.type in ("mcq", "multi_select") %}
+    {% set chosen = result.chosen if result.chosen is string else result.chosen %}
+    {% for c in choices %}
+      {% set picked = (c.id == result.chosen) if q.type == "mcq" else (c.id in result.chosen) %}
+      {% set right = (c.id == result.answer) if q.type == "mcq" else (c.id in result.answer) %}
+      <div class="opt result{% if right %} right{% endif %}{% if picked and not right %} wrong{% endif %}">
+        <span class="k">{{ "✓" if right else ("✗" if picked else loop.index) }}</span><span class="opt-text">{{ c.html }}</span>
+      </div>
+    {% endfor %}
+  {% elif q.type == "fill_blank" %}
+    {% for key, b in result.blanks.items() %}
+      <div class="line" data-blank-status="{{ 'ok' if b.correct else 'bad' }}">
+        <span class="n">{{ key }}</span>
+        <span class="m">{{ b.given or "—" }}</span>
+        <span class="mark {{ 'ok' if b.correct else 'bad' }}">{{ "✓" if b.correct else "✗" }}</span>
+        {% if not b.correct %}<span class="muted">expected: {{ b.accept }}</span>{% endif %}
+      </div>
+    {% endfor %}
+  {% elif q.type == "math_answer" %}
+    {% set v = result.verdict %}
+    <div class="line" data-final="{{ v.status }}">
+      <span class="m">{% if widget == "text" %}{{ result.answer }}{% else %}\({{ result.answer }}\){% endif %}</span>
+      <span class="mark {{ v.status }}">{{ MARKS[v.status] }}</span><span class="badge">{{ BADGES[v.status] }}</span>
+    </div>
+    {% if v.reason and v.status != "pass" %}<div class="note">{{ v.reason }}</div>{% endif %}
+  {% elif q.type == "exercise" %}
+    {% for line in result.lines %}
+      {% set s = line.verdict.status %}
+      <div class="line" data-status="{{ s }}">
+        <span class="n">{{ loop.index }}</span>
+        <span class="m">\({{ line.latex }}\)</span>
+        <span class="mark {{ s }}">{{ MARKS[s] }}</span><span class="badge">{{ BADGES[s] }}</span>
+      </div>
+      {% if line.justification %}<div class="why-text">↳ {{ line.justification }}</div>{% endif %}
+      {% if line.verdict.reason and s not in ("pass",) and line.verdict.reason != "definition" or s in ("fail", "agent_fail") %}
+      <div class="note {{ s }}">{{ line.verdict.reason }}{% if line.verdict.counterexample %} — e.g. at {% for k, val in line.verdict.counterexample.items() %}{{ k }} = {{ val }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</div>
+      {% endif %}
+    {% endfor %}
+    <div class="final" data-final="{{ result.final.status }}">
+      Final answer: <span class="mark {{ result.final.status }}">{{ MARKS[result.final.status] }}</span>
+      {% if result.final.reason and result.final.status != "pass" %}<span class="muted">{{ result.final.reason }}</span>{% endif %}
+    </div>
+  {% endif %}
+
+  {% if explanation_html %}<div class="explanation serif">{{ explanation_html }}</div>{% endif %}
+
+  <div class="row">
+    <span class="hint">
+      {% if pending %}<span class="pend">◌</span> {{ result.lines|selectattr("verdict.status", "equalto", "undecided")|list|length }} line(s) with the agent…
+      {% elif unverified %}
+        <button class="ghost" type="button" hx-post="/attempts/{{ attempt.id }}/q/{{ n }}/regrade" hx-target="closest .verdict" hx-swap="outerHTML">Retry grading</button>
+      {% endif %}
+    </span>
+    <a class="send next" href="{{ next_url }}" data-next>Next ⏎</a>
+  </div>
+</div>

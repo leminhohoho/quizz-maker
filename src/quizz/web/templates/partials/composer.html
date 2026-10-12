@@ -1,0 +1,37 @@
+<form id="composer" class="composer" data-type="{{ q.type }}" data-widget="{{ widget }}"
+      hx-post="/attempts/{{ attempt.id }}/q/{{ n }}" hx-target="#answer-area" hx-swap="innerHTML">
+  <input type="hidden" name="response">
+  {% if q.type == "mcq" %}
+    {% for c in choices %}
+    <label class="opt"><input type="radio" name="choice" value="{{ c.id }}"><span class="k">{{ loop.index }}</span><span class="opt-text">{{ c.html }}</span></label>
+    {% endfor %}
+  {% elif q.type == "multi_select" %}
+    {% for c in choices %}
+    <label class="opt"><input type="checkbox" name="choices" value="{{ c.id }}"><span class="k">{{ loop.index }}</span><span class="opt-text">{{ c.html }}</span></label>
+    {% endfor %}
+  {% elif q.type == "math_answer" %}
+    {% if widget == "text" %}
+    <input class="text-answer" name="answer" autocomplete="off" spellcheck="false" placeholder="type your answer">
+    {% else %}
+    <math-field class="mf" data-name="answer"></math-field>
+    {% endif %}
+  {% elif q.type == "exercise" %}
+    <div class="steps">
+      <div class="step">
+        <span class="n">1</span>
+        <div class="step-body">
+          <math-field class="mf"></math-field>
+          <input class="why" placeholder="reason (optional)" hidden>
+        </div>
+        <button type="button" class="icon-btn rm" title="Remove step" aria-label="Remove step">×</button>
+      </div>
+    </div>
+  {% endif %}
+  <div class="row">
+    <span class="hint">{{ hint }}</span>
+    <span class="actions">
+      {% if q.type == "exercise" %}<button type="button" class="ghost add-step">+ step</button>{% endif %}
+      <button class="send" type="submit">Check</button>
+    </span>
+  </div>
+</form>

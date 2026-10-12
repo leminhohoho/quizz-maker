@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Settings · quizz{% endblock %}
+{% block main %}
+<div class="column">
+  <h1 class="serif-title">Settings</h1>
+  <form class="settings" method="post" action="/settings">
+    <label>Grader command
+      <input name="grader_command" value="{{ config.command or '' }}" placeholder="claude -p" autocomplete="off" spellcheck="false">
+    </label>
+    <p class="muted">Runs when a solution line can't be decided by the checkers. The prompt is sent on stdin,
+      or written to a file if the command contains <code>{prompt_file}</code>, e.g.
+      <code>codex exec "$(cat {prompt_file})"</code>. Leave empty to disable; such lines are then marked unverified.</p>
+    <label>Timeout (seconds)
+      <input name="grader_timeout" value="{{ config.timeout|score }}" inputmode="numeric">
+    </label>
+    <button class="send" type="submit">Save</button>
+  </form>
+</div>
+{% endblock %}

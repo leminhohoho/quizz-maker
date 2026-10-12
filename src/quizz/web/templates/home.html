@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="column home">
+  <h1 class="greeting">What are we studying today?</h1>
+  {% if not courses %}
+  <div class="empty">
+    <p>No quizzes yet.</p>
+    <p class="muted">Ask your coding agent to compile a lecture with the <code>quizz-compile</code> skill, e.g.
+      <code>compile ~/lectures/week3.pdf into a quiz</code>. Run <code>quizz install-skill</code> once to make the skill available.</p>
+  </div>
+  {% else %}
+  {% for course, quizzes in courses %}
+  <section class="course">
+    <h2 class="label">{{ course }}</h2>
+    <div class="quiz-list">
+      {% for item in quizzes %}
+      <a class="quiz-card" href="/quiz/{{ item.id }}">
+        <span class="title">{{ item.title }}</span>
+        <span class="muted">{{ item.questions }} questions{% if item.best_score is not none %} · best {{ item.best_score|score }}{% endif %}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

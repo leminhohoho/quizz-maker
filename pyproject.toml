@@ -36,5 +36,8 @@ packages = ["src/quizz"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-filterwarnings = ["ignore:builtin type .* has no __module__ attribute:DeprecationWarning"]
+filterwarnings = [
+    "ignore:builtin type .* has no __module__ attribute:DeprecationWarning",
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
 markers = ["browser: Playwright browser tests"]

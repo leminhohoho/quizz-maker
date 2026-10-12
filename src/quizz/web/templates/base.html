@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}quizz{% endblock %}</title>
+  <link rel="stylesheet" href="/static/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/vendor/htmx.min.js" defer></script>
+  <script src="/static/vendor/katex/katex.min.js" defer></script>
+  <script src="/static/vendor/katex/auto-render.min.js" defer></script>
+  <script src="/static/vendor/mathlive/mathlive.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<div class="shell" id="shell">
+  <aside class="sidebar">
+    <div class="sb-top">
+      <a class="brand" href="/">quizz</a>
+      <button class="icon-btn" type="button" data-toggle-sidebar title="Collapse sidebar" aria-label="Collapse sidebar">⟨</button>
+    </div>
+    {% if quiz %}
+    <form method="post" action="/quiz/{{ quiz.id }}/attempts"><button class="new" type="submit">+ New attempt</button></form>
+    {% endif %}
+    <nav class="sb-nav">
+      {% for course, quizzes in courses %}
+      <div class="h">{{ course }}</div>
+      {% for item in quizzes %}
+      <a class="it{% if quiz and quiz.id == item.id %} on{% endif %}" href="/quiz/{{ item.id }}">{{ item.title }}</a>
+      {% endfor %}
+      {% endfor %}
+      {% if recent %}
+      <div class="h">Recent attempts</div>
+      {% for a in recent %}
+      <a class="it{% if attempt and attempt.id == a.id %} on{% endif %}" href="/attempts/{{ a.id }}">
+        {{ a.title }} · {% if a.finished_at %}{{ a.score|score }}/{{ a.max_score|score }}{% else %}<span class="live">in progress</span>{% endif %}
+      </a>
+      {% endfor %}
+      {% endif %}
+    </nav>
+    <a class="it settings-link" href="/settings">Settings</a>
+  </aside>
+  <main class="main">
+    <button class="icon-btn reopen" type="button" data-toggle-sidebar title="Open sidebar" aria-label="Open sidebar">⟩</button>
+    {% block main %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>
