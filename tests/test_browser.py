@@ -67,6 +67,7 @@ def test_typed_steps_are_submitted_and_graded(server, page):
     page.keyboard.type("x+1")
     page.keyboard.press("Enter")  # composer JS: new step
     assert page.locator(".step").count() == 2
+    page.wait_for_function("document.activeElement === document.querySelectorAll('#composer math-field')[1]")
     page.keyboard.type("2x")
     page.keyboard.press("Alt+Enter")  # reveal the reason line
     page.keyboard.type("doubling")

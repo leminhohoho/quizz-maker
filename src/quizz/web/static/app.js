@@ -115,7 +115,7 @@
     why.hidden = true;
     after.after(step);
     renumber(form);
-    requestAnimationFrame(() => fresh.focus());
+    requestAnimationFrame(() => fresh.focus()); // MathLive mounts its editor one frame after insertion
     return step;
   }
 
