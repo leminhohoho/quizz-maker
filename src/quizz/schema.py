@@ -100,7 +100,6 @@ class Exercise(QuestionBase):
     final: CheckSpec
     reference_solution: list[RefStep] = Field(min_length=1)
     rubric: str = ""
-    require_justification: list[Annotated[int, Field(ge=0)]] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _chain_needs_start(self):

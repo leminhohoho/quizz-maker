@@ -43,6 +43,15 @@ def test_equivalent_is_unknown_with_too_few_valid_points():
     assert equivalent(expr, expr, seed=1, runner=timeout_symbolic).status == "unknown"
 
 
+def test_equivalent_treats_engine_errors_like_timeouts():
+    def broken_symbolic(fn, *args, timeout):
+        if fn.__name__ == "_symbolic_zero":
+            raise RecursionError("sympy blew the stack")
+        return fn(*args)
+
+    assert equivalent((x + 1) ** 2, x**2 + 2 * x + 1, seed=1, runner=broken_symbolic).status == "numeric"
+
+
 def test_equivalent_is_deterministic_for_a_seed():
     a = equivalent((x + 1) ** 2, x**2 + 1, seed=7).counterexample
     b = equivalent((x + 1) ** 2, x**2 + 1, seed=7).counterexample

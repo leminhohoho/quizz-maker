@@ -170,7 +170,6 @@ A package is a directory: `quiz.json` plus optional `assets/` (figures cropped f
 - `final`: CheckSpec applied to the last line.
 - `reference_solution: [{latex, justification?, agent_graded?: bool}]`.
 - `rubric`: plain text given to the agent grader for undecided lines.
-- `require_justification: [int]` — reference line indices whose justification must be present and is graded by the agent.
 
 All math strings use the **MathLive LaTeX dialect** so content and answers share one parser.
 
@@ -197,11 +196,11 @@ All math strings use the **MathLive LaTeX dialect** so content and answers share
      - Unevaluated integrals and arbitrary constants (`C`, `C_{n}`): try `doit()`; otherwise compare derivatives with respect to the integration variable (equivalence modulo constants).
      - Definition lines (`u = x^2`) add a substitution; later lines are compared after back-substitution. Lines changing the differential are attempted via `doit()` on both sides; failure → `undecided`.
    - **`derivation`** (physics, chemistry): each line must be **true under the context**.
-     - Substitute givens (with units, via `sympy.physics.units`) and quantities defined on earlier lines; all sides must agree within tolerance and be dimensionally consistent → `pass`, else `fail`.
+     - Substitute givens (with units, via `quizz.units`: SI base units as positive SymPy symbols) and quantities defined on earlier lines; all sides must agree within 1 % relative tolerance and be dimensionally consistent → `pass`, else `fail`.
      - A definition of a declared symbol is compared against the value of that symbol in `reference_values` — a `{symbol: {value, unit}}` map the importer computes by evaluating the reference solution and stores alongside the question in `data_json`; mismatch → `fail` (this localizes the first wrong line).
      - A symbolic line (no numeric evaluation possible) is checked as implied by `relations` (solve relations for the line's subject and compare). Not decidable → `undecided`.
 3. **Final answer:** the last line is checked with `final`. Sig figs are evaluated only here, from the literal the user typed.
-4. **Agent fallback:** `undecided` lines plus lines listed in `require_justification` go to one agent call per submission (§6.3).
+4. **Agent fallback:** `undecided` lines go to one agent call per submission (§6.3), together with their justifications.
 
 ### Scoring
 
