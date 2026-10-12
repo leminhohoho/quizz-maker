@@ -106,6 +106,20 @@ def test_atoms_are_single_symbols():
     assert parse_expr(r"\Delta H+2", atoms=[r"\Delta H"]) == dh + 2
 
 
+@pytest.mark.parametrize(
+    "atom, written",
+    [
+        (r"\Delta H_1", r"\Delta H_{1}"),
+        (r"\Delta H_{1}", r"\Delta H_1"),
+        (r"\Delta S_{sys}", r"\Delta S_{\mathrm{sys}}"),
+        (r"\Delta S_{sys}", r"\Delta S_{sys}"),
+        (r"\Delta H^\circ_f", r"\Delta H^{\circ}_{f}"),
+    ],
+)
+def test_atoms_match_equivalent_spellings(atom, written):
+    assert parse_expr(written + "+1", atoms=[atom]) == sp.Symbol(atom) + 1
+
+
 def test_d_is_a_plain_symbol_outside_integrals():
     d = sp.Symbol("d")
     assert parse_expr(r"dx") == d * x

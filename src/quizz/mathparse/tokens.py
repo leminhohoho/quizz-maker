@@ -107,19 +107,43 @@ def _read_raw_group(src: str, j: int, name: str) -> tuple[str, int]:
     raise ParseError(f"unclosed \\{name}{{ before end of input", j)
 
 
+def _units(tokens: list[Token]) -> list[tuple[str, str, int]]:
+    """Spelling-insensitive view of tokens for atom matching: braces dropped, \\mathrm{abc} -> letters.
+
+    Each unit is (kind, value, index of the source token)."""
+    units = []
+    for idx, tok in enumerate(tokens):
+        if tok.kind == "SYM" and tok.value in "{}":
+            continue
+        if tok.kind == "TEXT" and tok.arg in ("mathrm", "text", "textrm", "mathit") and tok.value.strip().isalnum():
+            units.extend(("LETTER", c, idx) for c in tok.value.strip())
+            continue
+        units.append((tok.kind, tok.value, idx))
+    return units
+
+
 def _merge_atoms(tokens: list[Token], atoms: tuple[str, ...]) -> list[Token]:
     patterns = sorted(
-        ((a, [(t.kind, t.value) for t in _scan(a)]) for a in atoms),
+        ((a, [(k, v) for k, v, _ in _units(_scan(a))]) for a in atoms),
         key=lambda p: -len(p[1]),
     )
+    units = _units(tokens)
+    first_unit = {}
+    for u, (_, _, idx) in enumerate(units):
+        first_unit.setdefault(idx, u)
     out: list[Token] = []
     i = 0
     while i < len(tokens):
-        for atom, pat in patterns:
-            window = [(t.kind, t.value) for t in tokens[i : i + len(pat)]]
+        u = first_unit.get(i)
+        for atom, pat in patterns if u is not None else ():
+            window = [(k, v) for k, v, _ in units[u : u + len(pat)]]
             if pat and window == pat:
+                end = units[u + len(pat) - 1][2] + 1
+                depth = sum(1 if t.value == "{" else -1 for t in tokens[i:end] if t.kind == "SYM" and t.value in "{}")
+                while depth > 0 and end < len(tokens) and tokens[end].kind == "SYM" and tokens[end].value == "}":
+                    end, depth = end + 1, depth - 1
                 out.append(Token("ATOM", atom, tokens[i].pos))
-                i += len(pat)
+                i = end
                 break
         else:
             out.append(tokens[i])
