@@ -92,8 +92,10 @@
     }
   });
 
+  // htmx:load fires for <body> at startup and for every swapped-in element (including outerHTML polls).
+  document.addEventListener("htmx:load", (evt) => renderMath(evt.detail.elt));
+
   document.addEventListener("htmx:afterSwap", (evt) => {
-    renderMath(evt.detail.target);
     const next = document.querySelector("[data-next]");
     if (next && evt.detail.target.id === "answer-area") next.focus({ preventScroll: true });
   });
@@ -213,7 +215,6 @@
   document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("quizz.sidebar") === "collapsed") document.getElementById("shell")?.classList.add("collapsed");
     configureMathLive();
-    renderMath(document.body);
     const first = document.querySelector("#composer math-field, #composer input.text-answer, input.blank");
     if (first) first.focus();
   });

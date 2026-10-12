@@ -2,6 +2,7 @@
 
 import json
 import socket
+import sys
 import threading
 import time
 
@@ -91,3 +92,25 @@ def test_empty_answer_is_not_submitted(server, page):
     page.click("button.send")
     page.wait_for_selector("#composer-error .error-box")
     assert page.locator('[data-state="verdict"]').count() == 0
+
+
+def test_math_renders_after_agent_verdict_arrives(server, page, tmp_path):
+    agent = tmp_path / "agent.py"
+    agent.write_text(
+        "import sys, json, time\nsys.stdin.read()\ntime.sleep(1)\n"
+        "print(json.dumps({'lines': [{'index': 0, 'verdict': 'pass', 'comment': 'ok'}]}))"
+    )
+    page.goto(f"{server}/settings")
+    page.fill('input[name="grader_command"]', f"{sys.executable} {agent}")
+    page.click("button.send")
+    page.goto(f"{server}/quiz/test-quiz")
+    page.click("text=Start")
+    page.wait_for_url("**/q/1")
+    page.goto(page.url.replace("/q/1", "/q/6"))
+    page.wait_for_function("customElements.get('math-field') !== undefined")
+    # an unknown symbol x makes the line undecidable for the checkers
+    page.evaluate("document.querySelector('#composer math-field').value = 'q=mc\\\\Delta T x'")
+    page.click("button.send")
+    page.wait_for_selector('.line[data-status="undecided"]')
+    page.wait_for_selector('.line[data-status="agent_pass"]', timeout=20000)
+    assert page.locator('.line[data-status="agent_pass"] .katex').count() == 1
