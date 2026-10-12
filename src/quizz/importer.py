@@ -24,6 +24,7 @@ from quizz.schema import MCQ, QUESTION_TYPES, Exercise, FillBlank, MathAnswer, M
 
 PLACEHOLDER = re.compile(r"\{\{\s*([A-Za-z0-9_-]+)\s*\}\}")
 ASSET_REF = re.compile(r"!\[[^\]]*\]\((assets/[^)\s]+)\)")
+MATH_SPAN = re.compile(r"\$\$.+?\$\$|\$[^$\n]+?\$", re.S)  # same rule the web renderer uses
 
 
 @dataclass
@@ -179,6 +180,11 @@ def _check_assets(q, base: str, pkg_dir: Path, report: CheckReport) -> None:
 
 def _check_blanks(q: FillBlank, base: str, report: CheckReport) -> None:
     placeholders = set(PLACEHOLDER.findall(q.prompt))
+    for span in MATH_SPAN.findall(q.prompt):
+        if PLACEHOLDER.search(span):
+            report.errors.append(
+                Issue(f"{base}/prompt", "blank_in_math", f"blank inside math {span!r}", hint="put {{key}} outside $...$")
+            )
     if placeholders != set(q.blanks):
         report.errors.append(
             Issue(

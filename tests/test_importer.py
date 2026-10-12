@@ -78,6 +78,7 @@ def mutate(fn):
         (mutate(lambda p: p["questions"][0].update(answer="z")), "/questions/0/answer", "unknown_choice"),
         (mutate(lambda p: p["questions"][1].update(answer=["h", "z"])), "/questions/1/answer", "unknown_choice"),
         (mutate(lambda p: p["questions"][2].update(prompt="Only {{b1}} and {{b3}}.")), "/questions/2/blanks", "blank_mismatch"),
+        (mutate(lambda p: p["questions"][2].update(prompt="Flux {{b1}} over $\\varepsilon_{ {{b2}} }$.")), "/questions/2/prompt", "blank_in_math"),
         (mutate(lambda p: p["questions"][2]["blanks"]["b1"].update(accept=["(unclosed"], match="regex")), "/questions/2/blanks/b1/accept/0", "bad_regex"),
         (mutate(lambda p: p["questions"][4]["reference_solution"][2].update(latex="xe^{x}+e^{x}+C")), "/questions/4/reference_solution/2", "reference_step_failed"),
         (mutate(lambda p: p["questions"][4]["final"]["params"].update(integrand="x")), "/questions/4/final", "reference_final_failed"),
