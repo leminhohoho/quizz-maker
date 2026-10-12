@@ -83,11 +83,11 @@ def equivalent(
     try:
         if runner(_symbolic_zero, a, b, timeout=timeout):
             return Equiv("proven")
-    except (Timeout, Exception):  # budget exceeded or SymPy failed: fall back to sampling
+    except Exception:  # Timeout, or SymPy failed: fall back to sampling
         pass
     try:
         valid, counterexample = runner(_numeric_compare, a, b, seed, timeout=timeout)
-    except (Timeout, Exception):
+    except Exception:
         return Equiv("unknown")
     if counterexample is not None:
         return Equiv("different", counterexample)
