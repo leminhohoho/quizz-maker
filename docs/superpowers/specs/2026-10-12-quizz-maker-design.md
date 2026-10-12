@@ -163,6 +163,8 @@ A package is a directory: `quiz.json` plus optional `assets/` (figures cropped f
   - `symbols: {name: {assumptions: [real, positive, …], unit?: string, description?: string}}` — symbols shown to the user as available.
   - `givens: {name: {value: number, unit: string}}`.
   - `relations: [LaTeX equation]` — governing equations (e.g. `F = m a`), optional.
+  - `functions: {name: heaviside|dirac}` — names written `u(t)` / `\delta(t)` that are function calls rather than products, optional.
+  - Symbol and given names are LaTeX (`q`, `v_0`, `\Delta H`); multi-token names such as `\Delta H` are parsed as single symbols.
 - `steps_mode`: `chain` or `derivation` (§4).
 - `start`: LaTeX expression line 0 is compared against in `chain` mode.
 - `final`: CheckSpec applied to the last line.
