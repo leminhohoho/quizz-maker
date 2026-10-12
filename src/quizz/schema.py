@@ -2,7 +2,16 @@
 
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, PositiveInt, StringConstraints, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PositiveInt,
+    StringConstraints,
+    TypeAdapter,
+    field_validator,
+    model_validator,
+)
 
 from quizz.checkers import REGISTRY
 
@@ -134,3 +143,13 @@ def json_schema(question_type: str | None = None) -> dict:
     if question_type not in QUESTION_TYPES:
         raise ValueError(f"unknown question type {question_type!r}; available: {', '.join(QUESTION_TYPES)}")
     return QUESTION_TYPES[question_type].model_json_schema()
+
+
+_QUESTION = TypeAdapter(Question)
+
+
+def question_from_data(data: dict):
+    """Stored question JSON -> (Question model, reference_values JSON or None)."""
+    data = dict(data)
+    reference_values = data.pop("reference_values", None)
+    return _QUESTION.validate_python(data), reference_values
