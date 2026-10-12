@@ -180,7 +180,7 @@ def split(expr) -> tuple[sp.Expr, dict[str, int]]:
                 raise DimensionError("exponent of a dimensional quantity must be a number")
             if split(expr.exp)[1]:
                 raise DimensionError("exponent must be dimensionless")
-            return base_mag**expr.exp, {k: v * expr.exp for k, v in base_dims.items()}
+            return base_mag**expr.exp, {k: _plain(v * expr.exp) for k, v in base_dims.items()}
         exp_mag, exp_dims = split(expr.exp)
         if exp_dims:
             raise DimensionError("exponent must be dimensionless")
@@ -197,6 +197,11 @@ def split(expr) -> tuple[sp.Expr, dict[str, int]]:
             return expr.func(*(m for m, _ in args)), {}
         raise DimensionError(f"unsupported dimensional expression {expr}")
     return expr, {}
+
+
+def _plain(exponent) -> int | float:
+    exponent = sp.nsimplify(exponent)
+    return int(exponent) if exponent.is_integer else float(exponent)
 
 
 _LEADING_NUMBER = re.compile(r"^\s*[-+]?\s*(\d+\.?\d*|\.\d+)")
